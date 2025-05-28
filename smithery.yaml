@@ -1,0 +1,10 @@
+name: manga-translator-mcp
+entrypoint: server.py
+port: 5000
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties: {}
+  commandFunction: |
+    (config) => ({ command: "python server.py" })
