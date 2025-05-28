@@ -1,25 +1,16 @@
-from flask import Flask, request, jsonify
+from mcp.server.fastmcp import FastMCP
 from app import translate_text
 
-app = Flask(__name__)
+# MCP adını istediğin gibi değiştirebilirsin
+mcp = FastMCP("manga-translator-mcp")
 
-@app.route("/translate", methods=["POST"])
-def translate():
-    json_data = request.json
-    if not json_data:
-        return jsonify({"error": "JSON body missing"}), 400
-
-    text = json_data.get("text")
-    to = json_data.get("to")
-    if not text or not to:
-        return jsonify({"error": "'text' and 'to' parameters required"}), 400
-
+@mcp.tool()
+async def translate(text: str, to: str) -> dict:
+    """
+    MCP aracı olarak çeviri yapar.
+    """
     result = translate_text(text, to)
-    return jsonify(result)
-
-@app.route("/health")
-def health():
-    return "OK", 200
+    return result
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    mcp.run(transport="stdio")

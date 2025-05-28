@@ -1,13 +1,16 @@
 import http.client
 import urllib.parse
+import json
 
 RAPIDAPI_HOST = "mangapi3.p.rapidapi.com"
-RAPIDAPI_KEY = "5d9b487097msh41cca179c3ca6c6p12cabcjsn08033da29783"
+RAPIDAPI_KEY = "5d9b487097msh41cca179c3ca6c6p12abcjsn08033da29783"
 
-def translate_text(text: str, to: str):
+def translate_text(text: str, to: str) -> str:
+    """
+    MangAPI3 Translate API kullanarak text'i hedef dile çevirir.
+    """
     conn = http.client.HTTPSConnection(RAPIDAPI_HOST)
 
-    # Form verisi olarak text ve to parametreleri gönderilecek
     payload = urllib.parse.urlencode({
         "text": text,
         "to": to.upper()
@@ -25,9 +28,8 @@ def translate_text(text: str, to: str):
     data = res.read()
     result = data.decode("utf-8")
 
-    # JSON formatında string dönüyor, istersen JSON’a çevir
-    import json
     try:
+        # JSON cevabı dict olarak döndür
         return json.loads(result)
-    except Exception:
+    except json.JSONDecodeError:
         return {"error": "Geçersiz JSON cevap", "raw": result}
