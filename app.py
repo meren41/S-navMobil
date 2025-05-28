@@ -1,35 +1,23 @@
-import http.client
-import urllib.parse
+import requests
 import json
 
-RAPIDAPI_HOST = "mangapi3.p.rapidapi.com"
-RAPIDAPI_KEY = "5d9b487097msh41cca179c3ca6c6p12abcjsn08033da29783"
+JOKE_API_URL = "https://v2.jokeapi.dev/joke/Any"
 
-def translate_text(text: str, to: str) -> str:
+def get_joke() -> str:
     """
-    MangAPI3 Translate API kullanarak text'i hedef dile çevirir.
+    JokeAPI'yi kullanarak rastgele bir şaka alır.
     """
-    conn = http.client.HTTPSConnection(RAPIDAPI_HOST)
-
-    payload = urllib.parse.urlencode({
-        "text": text,
-        "to": to.upper()
-    })
-
     headers = {
-        'x-rapidapi-key': RAPIDAPI_KEY,
-        'x-rapidapi-host': RAPIDAPI_HOST,
-        'Content-Type': "application/x-www-form-urlencoded"
+        'Content-Type': 'application/json'
     }
 
-    conn.request("POST", "/api/translate", payload, headers)
-
-    res = conn.getresponse()
-    data = res.read()
-    result = data.decode("utf-8")
-
-    try:
-        # JSON cevabı dict olarak döndür
-        return json.loads(result)
-    except json.JSONDecodeError:
-        return {"error": "Geçersiz JSON cevap", "raw": result}
+    # API'yi çağır
+    response = requests.get(JOKE_API_URL, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        if data['type'] == 'single':
+            return data['joke']  # Tek satırlık şaka
+        elif data['type'] == 'twopart':
+            return f"{data['setup']} - {data['delivery']}"  # Setup ve delivery kısmı
+    else:
+        return "Şaka alınırken bir hata oluştu."

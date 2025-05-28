@@ -1,4 +1,4 @@
-name: manga-translator-mcp
+name: joke-api-mcp
 entrypoint: server.py
 port: 5000
 startCommand:
@@ -7,4 +7,5 @@ startCommand:
     type: object
     properties: {}
   commandFunction: |
-    (config) => ({ command: "python server.py" })
+    (config) => ({ command: "python", args: ["-m", "server"] })
+  exampleConfig: {}

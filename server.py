@@ -1,16 +1,18 @@
 from mcp.server.fastmcp import FastMCP
-from app import translate_text
+from app import get_joke
 
 # MCP adını istediğin gibi değiştirebilirsin
-mcp = FastMCP("manga-translator-mcp")
+mcp = FastMCP("joke-api-mcp")
 
 @mcp.tool()
-async def translate(text: str, to: str) -> dict:
+async def get_random_joke() -> str:
     """
-    MCP aracı olarak çeviri yapar.
+    JokeAPI'yi kullanarak rastgele şaka döner.
     """
-    result = translate_text(text, to)
-    return result
+    joke = get_joke()
+    return joke
 
 if __name__ == "__main__":
+    print("MCP Server başlatılıyor...")
     mcp.run(transport="stdio")
+    print("MCP Server çalışıyor!")
